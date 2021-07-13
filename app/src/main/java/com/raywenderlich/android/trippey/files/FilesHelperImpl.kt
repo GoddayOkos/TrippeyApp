@@ -6,15 +6,31 @@ import java.io.FileOutputStream
 class FilesHelperImpl(private val directory: File) : FilesHelper {
 
     override fun saveData(fileName: String, data: String) {
-        TODO("Not yet implemented")
+        // 1. Get a reference to the file you want to use
+        val file = buildFile(fileName)
+
+        // 2. Create FileOutputStream since we are writing to file here
+        val fileOutputStream = buildOutputStream(file)
+
+        // 3. Write data in bytes
+        try {
+            fileOutputStream.use {
+                it.write(data.toByteArray())
+            }
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
     }
 
-    override fun getData(): List<File> {
-        TODO("Not yet implemented")
-    }
+    override fun getData(): List<File> =
+        directory.listFiles()?.toList() ?: emptyList()
 
     override fun deleteData(fileName: String) {
-        TODO("Not yet implemented")
+        val targetFile = buildFile(fileName)
+
+        if (targetFile.exists()) {
+            targetFile.delete()
+        }
     }
 
     /**
