@@ -34,11 +34,14 @@
 
 package com.raywenderlich.android.trippey.repository
 
+import android.content.SharedPreferences
 import com.raywenderlich.android.trippey.model.None
 import com.raywenderlich.android.trippey.model.SortOption
 import com.raywenderlich.android.trippey.model.Trip
 
-class TrippeyRepositoryImpl : TrippeyRepository {
+class TrippeyRepositoryImpl(
+  private val sharedPreferences: SharedPreferences
+) : TrippeyRepository {
 
   private val trips = mutableListOf<Trip>()
   private var sortOption: SortOption = None
