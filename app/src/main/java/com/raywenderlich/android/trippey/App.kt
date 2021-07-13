@@ -41,6 +41,7 @@ import com.raywenderlich.android.trippey.files.FilesHelper
 import com.raywenderlich.android.trippey.files.FilesHelperImpl
 import com.raywenderlich.android.trippey.repository.TrippeyRepository
 import com.raywenderlich.android.trippey.repository.TrippeyRepositoryImpl
+import java.io.File
 
 class App : Application() {
 
@@ -59,7 +60,22 @@ class App : Application() {
               internal storage of this app. This internal storage
               is unique to this app.
              */
-            FilesHelperImpl(instance.filesDir)
+            FilesHelperImpl(getFilesDirectory())
+        }
+
+        /**
+         * This methods get an external file directory/folder which is not
+         * unique to this application. If the directory doesn't exist, the
+         * directory is created and returned.
+         */
+        private fun getFilesDirectory(): File {
+            val directory = File(instance.getExternalFilesDir(null), "")
+
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            return directory
         }
 
         private val gson by lazy { Gson() }
