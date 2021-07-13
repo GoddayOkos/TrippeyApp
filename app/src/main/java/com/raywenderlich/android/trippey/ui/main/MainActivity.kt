@@ -34,12 +34,16 @@
 
 package com.raywenderlich.android.trippey.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.raywenderlich.android.trippey.App
 import com.raywenderlich.android.trippey.R
+import com.raywenderlich.android.trippey.model.SortOption
 import com.raywenderlich.android.trippey.model.Trip
+import com.raywenderlich.android.trippey.model.getSortOptionFromName
+import com.raywenderlich.android.trippey.repository.TrippeyRepositoryImpl.Companion.KEY_SORT_OPTION
 import com.raywenderlich.android.trippey.ui.addTrip.AddTripActivity
 import com.raywenderlich.android.trippey.ui.main.sorting.SortOptionDialog
 import com.raywenderlich.android.trippey.ui.tripDetails.TripDetailsActivity
@@ -50,6 +54,9 @@ class MainActivity : AppCompatActivity() {
 
   private val adapter by lazy { TripAdapter(::onItemLongTapped, ::onItemTapped) }
   private val repository by lazy { App.repository }
+  private val localPreferences by lazy {
+    getPreferences(Context.MODE_PRIVATE)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     setTheme(R.style.AppTheme)
@@ -75,14 +82,14 @@ class MainActivity : AppCompatActivity() {
 
   private fun showFilterAndSortingDialog() {
     val dialog = SortOptionDialog { sortOption ->
-      repository.saveSortOption(sortOption)
+      saveSortOption(sortOption)
       refreshData()
     }
     dialog.show(supportFragmentManager, null)
   }
 
   private fun refreshData() {
-    adapter.setData(repository.getTrips(), repository.getSortOption())
+    adapter.setData(repository.getTrips(), getSortOption())
   }
 
   override fun onResume() {
@@ -98,10 +105,17 @@ class MainActivity : AppCompatActivity() {
       onPositiveAction = {
         repository.deleteTrip(trip.id)
 
-        adapter.setData(repository.getTrips(), repository.getSortOption())
+        refreshData()
       })
   }
 
+  private fun getSortOption(): SortOption {
+    return getSortOptionFromName(localPreferences.getString(KEY_SORT_OPTION, "") ?: "")
+  }
+
+  private fun saveSortOption(sortOption: SortOption) {
+    localPreferences.edit().putString(KEY_SORT_OPTION, sortOption.name).apply()
+  }
 
   private fun onItemTapped(trip: Trip) {
     startActivity(TripDetailsActivity.getIntent(this, trip))
