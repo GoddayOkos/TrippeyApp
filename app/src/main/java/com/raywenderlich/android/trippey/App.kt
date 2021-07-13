@@ -36,6 +36,8 @@ package com.raywenderlich.android.trippey
 
 import android.app.Application
 import android.content.Context
+import com.raywenderlich.android.trippey.files.FilesHelper
+import com.raywenderlich.android.trippey.files.FilesHelperImpl
 import com.raywenderlich.android.trippey.repository.TrippeyRepository
 import com.raywenderlich.android.trippey.repository.TrippeyRepositoryImpl
 
@@ -50,7 +52,18 @@ class App : Application() {
             instance.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
         }
 
-        val repository: TrippeyRepository by lazy { TrippeyRepositoryImpl(sharedPreferences) }
+        private val filesHelper: FilesHelper by lazy {
+            /*
+              instance.filesDir gives access to the
+              internal storage of this app. This internal storage
+              is unique to this app.
+             */
+            FilesHelperImpl(instance.filesDir)
+        }
+
+        val repository: TrippeyRepository by lazy {
+            TrippeyRepositoryImpl(sharedPreferences, filesHelper)
+        }
     }
 
     override fun onCreate() {
