@@ -45,7 +45,7 @@ class TrippeyRepositoryImpl(
 ) : TrippeyRepository {
 
   companion object {
-    private const val KEY_SORT_OPTION = "sort_option"
+    const val KEY_SORT_OPTION = "sort_option"
   }
 
   private val trips = mutableListOf<Trip>()
