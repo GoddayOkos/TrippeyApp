@@ -52,19 +52,28 @@ class TrippeyDatabase(
         val database = writableDatabase ?: return
 
         val newValues = ContentValues().apply {
-            put(DatabaseConstants.COLUMN_ID, trip.id)
-            put(DatabaseConstants.COLUMN_TITLE, trip.title)
+            put(COLUMN_ID, trip.id)
+            put(COLUMN_TITLE, trip.title)
             put(COLUMN_COUNTRY, trip.country)
             put(COLUMN_DETAILS, trip.details)
             put(COLUMN_IMAGE_URL, trip.imageUrl)
-            put(DatabaseConstants.COLUMN_LOCATIONS, gson.toJson(trip.locations))
+            put(COLUMN_LOCATIONS, gson.toJson(trip.locations))
         }
 
         database.insert(TRIP_TABLE_NAME, null, newValues)
     }
 
     fun updateTrip(trip: Trip) {
-        // TODO
+        val database = writableDatabase ?: return
+
+        val selection = QUERY_BY_ID
+        val selectionArguments = arrayOf(trip.id)
+
+        val newValues = ContentValues().apply {
+            put(COLUMN_LOCATIONS, gson.toJson(trip.locations))
+        }
+
+        database.update(TRIP_TABLE_NAME, newValues, selection, selectionArguments)
     }
 
     fun deleteTrip(tripId: String) {
