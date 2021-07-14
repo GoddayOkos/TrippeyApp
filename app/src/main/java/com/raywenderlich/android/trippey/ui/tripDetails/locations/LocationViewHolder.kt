@@ -42,17 +42,19 @@ import kotlinx.android.synthetic.main.item_trip_location.view.*
 
 class LocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-  fun showData(tripLocation: TripLocation,
-               onItemLongTapped: (TripLocation) -> Unit) = with(itemView) {
-    locationName.text = tripLocation.name
-    locationAddress.text = tripLocation.address
+    fun showData(
+        tripLocation: TripLocation,
+        onItemLongTapped: (TripLocation) -> Unit
+    ) = with(itemView) {
+        locationName.text = tripLocation.name
+        locationAddress.text = tripLocation.address
 
-    Glide.with(itemView).load(tripLocation.locationImageUrl).into(locationImage)
+        Glide.with(itemView).load(tripLocation.locationImageUrl).into(locationImage)
 
-    setOnLongClickListener {
-      onItemLongTapped(tripLocation)
+        setOnLongClickListener {
+            onItemLongTapped(tripLocation)
 
-      true
+            true
+        }
     }
-  }
 }

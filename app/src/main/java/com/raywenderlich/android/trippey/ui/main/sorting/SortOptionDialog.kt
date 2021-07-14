@@ -47,58 +47,66 @@ import com.raywenderlich.android.trippey.repository.TrippeyRepositoryImpl.Compan
 import kotlinx.android.synthetic.main.dialog_sorting.*
 
 class SortOptionDialog(
-  private val onSortOptionsSelected: (SortOption) -> Unit
+    private val onSortOptionsSelected: (SortOption) -> Unit
 ) : DialogFragment() {
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.dialog_sorting, container, false)
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    initUi()
-  }
-
-  private fun initUi() {
-    confirmButton.setOnClickListener {
-      onSortOptionSelected()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.dialog_sorting, container, false)
     }
 
-    val currentSort = getSortOption()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUi()
+    }
 
-    sortOptions.check(when (currentSort) {
-      ByName -> R.id.sortByTitle
-      ByNumberOfLocations -> R.id.sortByNumberOfLocations
-      else -> R.id.noSort
-    })
-  }
+    private fun initUi() {
+        confirmButton.setOnClickListener {
+            onSortOptionSelected()
+        }
 
-  private fun getSortOption(): SortOption {
-    val localPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
-    return getSortOptionFromName(localPreferences?.getString(KEY_SORT_OPTION, "") ?: "")
-  }
+        val currentSort = getSortOption()
 
-  private fun onSortOptionSelected() {
-    val selectedOption = sortOptions.checkedRadioButtonId
+        sortOptions.check(
+            when (currentSort) {
+                ByName -> R.id.sortByTitle
+                ByNumberOfLocations -> R.id.sortByNumberOfLocations
+                else -> R.id.noSort
+            }
+        )
+    }
 
-    onSortOptionsSelected(when (selectedOption) {
-      R.id.sortByNumberOfLocations -> ByNumberOfLocations
-      R.id.sortByTitle -> ByName
-      else -> None
-    })
+    private fun getSortOption(): SortOption {
+        val localPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
+        return getSortOptionFromName(localPreferences?.getString(KEY_SORT_OPTION, "") ?: "")
+    }
 
-    dismissAllowingStateLoss()
-  }
+    private fun onSortOptionSelected() {
+        val selectedOption = sortOptions.checkedRadioButtonId
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setStyle(STYLE_NO_TITLE, R.style.FragmentDialogTheme)
-  }
+        onSortOptionsSelected(
+            when (selectedOption) {
+                R.id.sortByNumberOfLocations -> ByNumberOfLocations
+                R.id.sortByTitle -> ByName
+                else -> None
+            }
+        )
 
-  override fun onStart() {
-    super.onStart()
-    dialog?.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-      WindowManager.LayoutParams.WRAP_CONTENT)
-  }
+        dismissAllowingStateLoss()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, R.style.FragmentDialogTheme)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+    }
 }

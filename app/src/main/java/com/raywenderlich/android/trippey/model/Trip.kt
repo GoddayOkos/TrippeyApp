@@ -38,10 +38,10 @@ import java.util.*
 
 @Parcelize
 data class Trip(
-  val id: String = UUID.randomUUID().toString(),
-  val title: String,
-  val country: String,
-  val details: String,
-  val imageUrl: String?,
-  val locations: List<TripLocation> = listOf()
+    val id: String = UUID.randomUUID().toString(),
+    val title: String,
+    val country: String,
+    val details: String,
+    val imageUrl: String?,
+    val locations: List<TripLocation> = listOf()
 ) : Parcelable

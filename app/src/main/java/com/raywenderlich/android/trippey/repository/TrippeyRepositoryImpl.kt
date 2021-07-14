@@ -44,30 +44,30 @@ import com.raywenderlich.android.trippey.model.Trip
 import com.raywenderlich.android.trippey.model.getSortOptionFromName
 
 class TrippeyRepositoryImpl(
-  private val sharedPreferences: SharedPreferences,
-  private val trippeyDatabase: TrippeyDatabase
+    private val sharedPreferences: SharedPreferences,
+    private val trippeyDatabase: TrippeyDatabase
 ) : TrippeyRepository {
 
-  companion object {
-    const val KEY_SORT_OPTION = "sort_option"
-  }
+    companion object {
+        const val KEY_SORT_OPTION = "sort_option"
+    }
 
-  override fun saveTrip(trip: Trip) = trippeyDatabase.saveTrip(trip)
+    override fun saveTrip(trip: Trip) = trippeyDatabase.saveTrip(trip)
 
-  override fun updateTrip(trip: Trip) = trippeyDatabase.updateTrip(trip)
+    override fun updateTrip(trip: Trip) = trippeyDatabase.updateTrip(trip)
 
-  override fun deleteTrip(tripId: String) = trippeyDatabase.deleteTrip(tripId)
+    override fun deleteTrip(tripId: String) = trippeyDatabase.deleteTrip(tripId)
 
-  override fun getTrips(): List<Trip> = trippeyDatabase.getTrips()
+    override fun getTrips(): List<Trip> = trippeyDatabase.getTrips()
 
-  override fun getSortOption(): SortOption {
-    val sortOption = sharedPreferences.getString(KEY_SORT_OPTION, null) ?: ""
-    return getSortOptionFromName(sortOption)
-  }
+    override fun getSortOption(): SortOption {
+        val sortOption = sharedPreferences.getString(KEY_SORT_OPTION, null) ?: ""
+        return getSortOptionFromName(sortOption)
+    }
 
-  override fun saveSortOption(sortOption: SortOption) {
-    sharedPreferences.edit()
-      .putString(KEY_SORT_OPTION, sortOption.name)
-      .apply()
-  }
+    override fun saveSortOption(sortOption: SortOption) {
+        sharedPreferences.edit()
+            .putString(KEY_SORT_OPTION, sortOption.name)
+            .apply()
+    }
 }

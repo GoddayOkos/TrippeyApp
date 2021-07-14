@@ -52,72 +52,72 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-  private val adapter by lazy { TripAdapter(::onItemLongTapped, ::onItemTapped) }
-  private val repository by lazy { App.repository }
-  private val localPreferences by lazy {
-    getPreferences(Context.MODE_PRIVATE)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    setTheme(R.style.AppTheme)
-
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-
-    initUi()
-  }
-
-  private fun initUi() {
-    tripsList.adapter = adapter
-    tripsList.layoutManager = LinearLayoutManager(this)
-
-    addTrip.setOnClickListener {
-      startActivity(AddTripActivity.getIntent(this))
+    private val adapter by lazy { TripAdapter(::onItemLongTapped, ::onItemTapped) }
+    private val repository by lazy { App.repository }
+    private val localPreferences by lazy {
+        getPreferences(Context.MODE_PRIVATE)
     }
 
-    filterOptions.setOnClickListener {
-      showFilterAndSortingDialog()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        initUi()
     }
-  }
 
-  private fun showFilterAndSortingDialog() {
-    val dialog = SortOptionDialog { sortOption ->
-      saveSortOption(sortOption)
-      refreshData()
+    private fun initUi() {
+        tripsList.adapter = adapter
+        tripsList.layoutManager = LinearLayoutManager(this)
+
+        addTrip.setOnClickListener {
+            startActivity(AddTripActivity.getIntent(this))
+        }
+
+        filterOptions.setOnClickListener {
+            showFilterAndSortingDialog()
+        }
     }
-    dialog.show(supportFragmentManager, null)
-  }
 
-  private fun refreshData() {
-    adapter.setData(repository.getTrips(), getSortOption())
-  }
+    private fun showFilterAndSortingDialog() {
+        val dialog = SortOptionDialog { sortOption ->
+            saveSortOption(sortOption)
+            refreshData()
+        }
+        dialog.show(supportFragmentManager, null)
+    }
 
-  override fun onResume() {
-    super.onResume()
+    private fun refreshData() {
+        adapter.setData(repository.getTrips(), getSortOption())
+    }
 
-    refreshData()
-  }
-
-  private fun onItemLongTapped(trip: Trip) {
-    createAndShowDialog(this,
-      getString(R.string.delete_title),
-      getString(R.string.delete_message, trip.title),
-      onPositiveAction = {
-        repository.deleteTrip(trip.id)
+    override fun onResume() {
+        super.onResume()
 
         refreshData()
-      })
-  }
+    }
 
-  private fun getSortOption(): SortOption {
-    return getSortOptionFromName(localPreferences.getString(KEY_SORT_OPTION, "") ?: "")
-  }
+    private fun onItemLongTapped(trip: Trip) {
+        createAndShowDialog(this,
+            getString(R.string.delete_title),
+            getString(R.string.delete_message, trip.title),
+            onPositiveAction = {
+                repository.deleteTrip(trip.id)
 
-  private fun saveSortOption(sortOption: SortOption) {
-    localPreferences.edit().putString(KEY_SORT_OPTION, sortOption.name).apply()
-  }
+                refreshData()
+            })
+    }
 
-  private fun onItemTapped(trip: Trip) {
-    startActivity(TripDetailsActivity.getIntent(this, trip))
-  }
+    private fun getSortOption(): SortOption {
+        return getSortOptionFromName(localPreferences.getString(KEY_SORT_OPTION, "") ?: "")
+    }
+
+    private fun saveSortOption(sortOption: SortOption) {
+        localPreferences.edit().putString(KEY_SORT_OPTION, sortOption.name).apply()
+    }
+
+    private fun onItemTapped(trip: Trip) {
+        startActivity(TripDetailsActivity.getIntent(this, trip))
+    }
 }

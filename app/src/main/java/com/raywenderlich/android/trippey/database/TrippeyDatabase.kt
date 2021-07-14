@@ -89,24 +89,32 @@ class TrippeyDatabase(
         val items = mutableListOf<Trip>()
         val database = readableDatabase ?: return items
 
-        val cursor = database.query(TRIP_TABLE_NAME,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null)
+        val cursor = database.query(
+            TRIP_TABLE_NAME,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
 
         while (cursor.moveToNext()) {
             items.add(
                 Trip(
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID)),
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)),
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COUNTRY)),
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DETAILS)),
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_URL)),
-                parseTripLocationFromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCATIONS)))
-            )
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COUNTRY)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DETAILS)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_URL)),
+                    parseTripLocationFromJson(
+                        cursor.getString(
+                            cursor.getColumnIndexOrThrow(
+                                COLUMN_LOCATIONS
+                            )
+                        )
+                    )
+                )
             )
         }
 
@@ -122,7 +130,7 @@ class TrippeyDatabase(
 
         return try {
             gson.fromJson(json, typeToken)
-        }catch (error: Throwable) {
+        } catch (error: Throwable) {
             error.printStackTrace()
             emptyList()
         }

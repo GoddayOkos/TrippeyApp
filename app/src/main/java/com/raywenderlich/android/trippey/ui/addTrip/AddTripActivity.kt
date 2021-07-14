@@ -45,39 +45,39 @@ import kotlinx.android.synthetic.main.activity_add_trip.*
 
 class AddTripActivity : AppCompatActivity() {
 
-  private val repository by lazy { App.repository }
+    private val repository by lazy { App.repository }
 
-  companion object {
-    fun getIntent(context: Context): Intent = Intent(context, AddTripActivity::class.java)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_add_trip)
-    initUi()
-  }
-
-  private fun initUi() {
-    addTrip.setOnClickListener { createTrip() }
-  }
-
-  private fun createTrip() {
-    val tripTitle = tripTitle.text.toString()
-    val tripDescription = tripDescription.text.toString()
-    val country = destinationCountry.text.toString()
-    val tripImage = tripImage.text.toString()
-
-    if (tripTitle.isNotEmpty() && tripDescription.isNotEmpty() && country.isNotEmpty()) {
-      repository.saveTrip(
-        Trip(
-          title = tripTitle,
-          country = country,
-          details = tripDescription,
-          imageUrl = tripImage
-        )
-      )
-
-      finish()
+    companion object {
+        fun getIntent(context: Context): Intent = Intent(context, AddTripActivity::class.java)
     }
-  }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_add_trip)
+        initUi()
+    }
+
+    private fun initUi() {
+        addTrip.setOnClickListener { createTrip() }
+    }
+
+    private fun createTrip() {
+        val tripTitle = tripTitle.text.toString()
+        val tripDescription = tripDescription.text.toString()
+        val country = destinationCountry.text.toString()
+        val tripImage = tripImage.text.toString()
+
+        if (tripTitle.isNotEmpty() && tripDescription.isNotEmpty() && country.isNotEmpty()) {
+            repository.saveTrip(
+                Trip(
+                    title = tripTitle,
+                    country = country,
+                    details = tripDescription,
+                    imageUrl = tripImage
+                )
+            )
+
+            finish()
+        }
+    }
 }
