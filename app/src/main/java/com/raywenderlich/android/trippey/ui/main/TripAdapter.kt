@@ -41,33 +41,33 @@ import com.raywenderlich.android.trippey.R
 import com.raywenderlich.android.trippey.model.*
 
 class TripAdapter(
-  private val onItemLongTapped: (Trip) -> Unit,
-  private val onItemTapped: (Trip) -> Unit
+    private val onItemLongTapped: (Trip) -> Unit,
+    private val onItemTapped: (Trip) -> Unit
 ) : RecyclerView.Adapter<TripViewHolder>() {
 
-  private val items = mutableListOf<Trip>()
+    private val items = mutableListOf<Trip>()
 
-  fun setData(newItems: List<Trip>, sortOption: SortOption) {
-    val sortedItems = when (sortOption) {
-      None -> newItems
-      ByName -> newItems.sortedBy { it.title }
-      ByNumberOfLocations -> newItems.sortedByDescending { it.locations.size }
+    fun setData(newItems: List<Trip>, sortOption: SortOption) {
+        val sortedItems = when (sortOption) {
+            None -> newItems
+            ByName -> newItems.sortedBy { it.title }
+            ByNumberOfLocations -> newItems.sortedByDescending { it.locations.size }
+        }
+
+        items.clear()
+        items.addAll(sortedItems)
+        notifyDataSetChanged()
     }
 
-    items.clear()
-    items.addAll(sortedItems)
-    notifyDataSetChanged()
-  }
+    override fun getItemCount() = items.size
 
-  override fun getItemCount() = items.size
+    override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
+        holder.showData(items[position], onItemLongTapped, onItemTapped)
+    }
 
-  override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
-    holder.showData(items[position], onItemLongTapped, onItemTapped)
-  }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trip, parent, false)
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
-    val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trip, parent, false)
-
-    return TripViewHolder(view)
-  }
+        return TripViewHolder(view)
+    }
 }

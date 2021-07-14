@@ -1,3 +1,5 @@
+package com.raywenderlich.android.trippey.database
+
 /*
  * Copyright (c) 2020 Razeware LLC
  *
@@ -30,18 +32,42 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- */package com.raywenderlich.android.trippey.model
+ */
+object DatabaseConstants {
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+    const val DATABASE_NAME = "Trippey"
+    const val DATABASE_VERSION = 2
 
-@Parcelize
-data class Trip(
-    val id: String = UUID.randomUUID().toString(),
-    val title: String,
-    val country: String,
-    val details: String,
-    val imageUrl: String?,
-    val locations: List<TripLocation> = listOf()
-) : Parcelable
+    /**
+     * Table names and column names for the database model.
+     */
+
+    const val TRIP_TABLE_NAME = "trips"
+    const val COLUMN_ID = "id"
+    const val COLUMN_TITLE = "title"
+    const val COLUMN_COUNTRY = "country"
+    const val COLUMN_DETAILS = "details"
+    const val COLUMN_IMAGE_URL = "imageUrl"
+    const val COLUMN_LOCATIONS = "locations"
+
+    /**
+     * Queries to help out with database setup.
+     * */
+
+    const val SQL_CREATE_ENTRIES = """
+    CREATE TABLE $TRIP_TABLE_NAME
+    ($COLUMN_ID TEXT PRIMARY KEY,
+     $COLUMN_TITLE TEXT NOT NULL,
+     $COLUMN_COUNTRY TEXT NOT NULL DEFAULT '',
+     $COLUMN_DETAILS TEXT NOT NULL,
+     $COLUMN_IMAGE_URL TEXT,
+     $COLUMN_LOCATIONS TEXT NOT NULL DEFAULT '')
+  """
+
+    const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TRIP_TABLE_NAME"
+
+    const val SQL_UPDATE_DATABASE_ADD_LOCATIONS =
+        "ALTER TABLE $TRIP_TABLE_NAME ADD $COLUMN_LOCATIONS TEXT NOT NULL DEFAULT ''"
+
+    const val QUERY_BY_ID = "$COLUMN_ID LIKE ?"
+}

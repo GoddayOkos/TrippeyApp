@@ -38,7 +38,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class TripLocation(
-  val name: String,
-  val address: String,
-  val locationImageUrl: String?
+    val name: String,
+    val address: String,
+    val locationImageUrl: String?
 ) : Parcelable

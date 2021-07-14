@@ -40,27 +40,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.raywenderlich.android.trippey.R
 import com.raywenderlich.android.trippey.model.TripLocation
 
-class LocationAdapter(private val onItemLongTapped: (TripLocation) -> Unit)
-  : RecyclerView.Adapter<LocationViewHolder>() {
+class LocationAdapter(private val onItemLongTapped: (TripLocation) -> Unit) :
+    RecyclerView.Adapter<LocationViewHolder>() {
 
-  private val items = mutableListOf<TripLocation>()
+    private val items = mutableListOf<TripLocation>()
 
-  fun setData(newItems: List<TripLocation>) {
-    items.clear()
-    items.addAll(newItems)
-    notifyDataSetChanged()
-  }
+    fun setData(newItems: List<TripLocation>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
+    }
 
-  override fun getItemCount() = items.size
+    override fun getItemCount() = items.size
 
-  override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
-    holder.showData(items[position], onItemLongTapped)
-  }
+    override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
+        holder.showData(items[position], onItemLongTapped)
+    }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
-    val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trip_location, parent,
-      false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_trip_location, parent,
+            false
+        )
 
-    return LocationViewHolder(view)
-  }
+        return LocationViewHolder(view)
+    }
 }

@@ -43,30 +43,31 @@ import kotlinx.android.synthetic.main.item_trip.view.*
 
 class TripViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-  fun showData(trip: Trip, onItemLongTap: (Trip) -> Unit, onItemTapped: (Trip) -> Unit) = with(itemView) {
-    tripName.text = trip.title
-    tripDescription.text = trip.details
+    fun showData(trip: Trip, onItemLongTap: (Trip) -> Unit, onItemTapped: (Trip) -> Unit) =
+        with(itemView) {
+            tripName.text = trip.title
+            tripDescription.text = trip.details
 
-    val imageToLoad = when {
-      trip.imageUrl != null -> trip.imageUrl
-      trip.locations.any { it.locationImageUrl != null } ->
-        trip.locations.first { it.locationImageUrl != null }.locationImageUrl
-      else -> ""
-    }
+            val imageToLoad = when {
+                trip.imageUrl != null -> trip.imageUrl
+                trip.locations.any { it.locationImageUrl != null } ->
+                    trip.locations.first { it.locationImageUrl != null }.locationImageUrl
+                else -> ""
+            }
 
-    if (imageToLoad.isNullOrBlank()) {
-      tripImage.setImageResource(R.drawable.placeholder_image)
-    } else {
-      Glide.with(itemView).load(imageToLoad).into(tripImage)
-    }
+            if (imageToLoad.isNullOrBlank()) {
+                tripImage.setImageResource(R.drawable.placeholder_image)
+            } else {
+                Glide.with(itemView).load(imageToLoad).into(tripImage)
+            }
 
-    setOnLongClickListener {
-      onItemLongTap(trip)
-      true
-    }
+            setOnLongClickListener {
+                onItemLongTap(trip)
+                true
+            }
 
-    setOnClickListener {
-      onItemTapped(trip)
-    }
-  }
+            setOnClickListener {
+                onItemTapped(trip)
+            }
+        }
 }

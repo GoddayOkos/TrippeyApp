@@ -39,15 +39,15 @@ import com.raywenderlich.android.trippey.model.Trip
 
 interface TrippeyRepository {
 
-  fun saveTrip(trip: Trip)
+    fun saveTrip(trip: Trip)
 
-  fun updateTrip(trip: Trip)
+    fun updateTrip(trip: Trip)
 
-  fun deleteTrip(tripId: String)
+    fun deleteTrip(tripId: String)
 
-  fun getTrips(): List<Trip>
+    fun getTrips(): List<Trip>
 
-  fun getSortOption(): SortOption
+    fun getSortOption(): SortOption
 
-  fun saveSortOption(sortOption: SortOption)
+    fun saveSortOption(sortOption: SortOption)
 }

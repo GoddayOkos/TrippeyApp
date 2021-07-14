@@ -44,43 +44,47 @@ import com.raywenderlich.android.trippey.R
 import com.raywenderlich.android.trippey.model.TripLocation
 import kotlinx.android.synthetic.main.dialog_add_trip_location.*
 
-class AddLocationDialogFragment(private val onTripLocationAdded: (TripLocation) -> Unit)
-  : DialogFragment() {
+class AddLocationDialogFragment(private val onTripLocationAdded: (TripLocation) -> Unit) :
+    DialogFragment() {
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.dialog_add_trip_location, container, false)
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    initUi()
-  }
-
-  private fun initUi() {
-    addTripLocation.setOnClickListener { addEntry() }
-  }
-
-  private fun addEntry() {
-    val locationName = locationNameInput.text.toString()
-    val locationAddress = locationAddressInput.text.toString()
-    val locationImageUrl = locationImageUrl.text.toString()
-
-    if (locationName.isNotEmpty() && locationAddress.isNotEmpty()) {
-      onTripLocationAdded(TripLocation(locationName, locationAddress, locationImageUrl))
-
-      dismissAllowingStateLoss()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.dialog_add_trip_location, container, false)
     }
-  }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setStyle(STYLE_NO_TITLE, R.style.FragmentDialogTheme)
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUi()
+    }
 
-  override fun onStart() {
-    super.onStart()
-    dialog?.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-      WindowManager.LayoutParams.WRAP_CONTENT)
-  }
+    private fun initUi() {
+        addTripLocation.setOnClickListener { addEntry() }
+    }
+
+    private fun addEntry() {
+        val locationName = locationNameInput.text.toString()
+        val locationAddress = locationAddressInput.text.toString()
+        val locationImageUrl = locationImageUrl.text.toString()
+
+        if (locationName.isNotEmpty() && locationAddress.isNotEmpty()) {
+            onTripLocationAdded(TripLocation(locationName, locationAddress, locationImageUrl))
+
+            dismissAllowingStateLoss()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, R.style.FragmentDialogTheme)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+    }
 }

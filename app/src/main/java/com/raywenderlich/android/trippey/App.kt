@@ -37,11 +37,9 @@ package com.raywenderlich.android.trippey
 import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
-import com.raywenderlich.android.trippey.files.FilesHelper
-import com.raywenderlich.android.trippey.files.FilesHelperImpl
+import com.raywenderlich.android.trippey.database.TrippeyDatabase
 import com.raywenderlich.android.trippey.repository.TrippeyRepository
 import com.raywenderlich.android.trippey.repository.TrippeyRepositoryImpl
-import java.io.File
 
 class App : Application() {
 
@@ -54,34 +52,12 @@ class App : Application() {
             instance.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
         }
 
-        private val filesHelper: FilesHelper by lazy {
-            /*
-              instance.filesDir gives access to the
-              internal storage of this app. This internal storage
-              is unique to this app.
-             */
-            FilesHelperImpl(getFilesDirectory())
-        }
-
-        /**
-         * This methods get an external file directory/folder which is not
-         * unique to this application. If the directory doesn't exist, the
-         * directory is created and returned.
-         */
-        private fun getFilesDirectory(): File {
-            val directory = File(instance.getExternalFilesDir(null), "")
-
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-
-            return directory
-        }
-
         private val gson by lazy { Gson() }
 
+        private val database by lazy { TrippeyDatabase(instance, gson) }
+
         val repository: TrippeyRepository by lazy {
-            TrippeyRepositoryImpl(sharedPreferences, filesHelper, gson)
+            TrippeyRepositoryImpl(sharedPreferences, database)
         }
     }
 

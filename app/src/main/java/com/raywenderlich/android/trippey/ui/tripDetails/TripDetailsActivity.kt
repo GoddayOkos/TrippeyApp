@@ -51,94 +51,94 @@ import kotlinx.android.synthetic.main.activity_trip_details.*
 
 class TripDetailsActivity : AppCompatActivity() {
 
-  private val repository by lazy { App.repository }
-  private val adapter by lazy { LocationAdapter(::onItemLongTapped) }
+    private val repository by lazy { App.repository }
+    private val adapter by lazy { LocationAdapter(::onItemLongTapped) }
 
-  private var trip: Trip? = null
+    private var trip: Trip? = null
 
-  companion object {
-    private const val KEY_TRIP = "trip"
+    companion object {
+        private const val KEY_TRIP = "trip"
 
-    fun getIntent(context: Context, trip: Trip): Intent =
-      Intent(context, TripDetailsActivity::class.java).apply {
-        putExtra(KEY_TRIP, trip)
-      }
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_trip_details)
-    initUi()
-    getData()
-  }
-
-  override fun onResume() {
-    super.onResume()
-    showData()
-  }
-
-  private fun showData() {
-    val trip = trip ?: return
-
-    tripName.text = trip.title
-    tripDescription.text = trip.details
-    tripCountry.text = trip.country
-
-    val imageToLoad = when {
-      trip.imageUrl != null -> trip.imageUrl
-      trip.locations.any { it.locationImageUrl != null } ->
-        trip.locations.first { it.locationImageUrl != null }.locationImageUrl
-      else -> ""
+        fun getIntent(context: Context, trip: Trip): Intent =
+            Intent(context, TripDetailsActivity::class.java).apply {
+                putExtra(KEY_TRIP, trip)
+            }
     }
 
-    if (imageToLoad.isNullOrBlank()) {
-      tripImage.setImageResource(R.drawable.placeholder_image)
-    } else {
-      Glide.with(this).load(imageToLoad).into(tripImage)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_trip_details)
+        initUi()
+        getData()
     }
 
-    adapter.setData(trip.locations)
-  }
-
-  private fun getData() {
-    trip = intent.getParcelableExtra(KEY_TRIP) as? Trip
-  }
-
-  private fun initUi() {
-    tripLocationsList.layoutManager = LinearLayoutManager(this)
-    tripLocationsList.adapter = adapter
-    addTripLocation.setOnClickListener {
-      val dialog = AddLocationDialogFragment { tripLocation ->
-        addLocationToTrip(tripLocation)
-      }
-      dialog.show(supportFragmentManager, null)
+    override fun onResume() {
+        super.onResume()
+        showData()
     }
-  }
 
-  private fun addLocationToTrip(tripLocation: TripLocation) {
-    val trip = trip ?: return
+    private fun showData() {
+        val trip = trip ?: return
 
-    val newTrip = trip.copy(locations = trip.locations + tripLocation)
-    repository.updateTrip(newTrip)
+        tripName.text = trip.title
+        tripDescription.text = trip.details
+        tripCountry.text = trip.country
 
-    this.trip = newTrip
-    showData()
-  }
+        val imageToLoad = when {
+            trip.imageUrl != null -> trip.imageUrl
+            trip.locations.any { it.locationImageUrl != null } ->
+                trip.locations.first { it.locationImageUrl != null }.locationImageUrl
+            else -> ""
+        }
 
-  private fun onItemLongTapped(tripLocation: TripLocation) {
-    createAndShowDialog(this,
-      getString(R.string.delete_title),
-      getString(R.string.delete_message, tripLocation.name),
-      onPositiveAction = { removeLocation(tripLocation) })
-  }
+        if (imageToLoad.isNullOrBlank()) {
+            tripImage.setImageResource(R.drawable.placeholder_image)
+        } else {
+            Glide.with(this).load(imageToLoad).into(tripImage)
+        }
 
-  private fun removeLocation(tripLocation: TripLocation) {
-    val trip = trip ?: return
+        adapter.setData(trip.locations)
+    }
 
-    val newTrip = trip.copy(locations = trip.locations - tripLocation)
-    repository.updateTrip(newTrip)
+    private fun getData() {
+        trip = intent.getParcelableExtra(KEY_TRIP) as? Trip
+    }
 
-    this.trip = newTrip
-    showData()
-  }
+    private fun initUi() {
+        tripLocationsList.layoutManager = LinearLayoutManager(this)
+        tripLocationsList.adapter = adapter
+        addTripLocation.setOnClickListener {
+            val dialog = AddLocationDialogFragment { tripLocation ->
+                addLocationToTrip(tripLocation)
+            }
+            dialog.show(supportFragmentManager, null)
+        }
+    }
+
+    private fun addLocationToTrip(tripLocation: TripLocation) {
+        val trip = trip ?: return
+
+        val newTrip = trip.copy(locations = trip.locations + tripLocation)
+        repository.updateTrip(newTrip)
+
+        this.trip = newTrip
+        showData()
+    }
+
+    private fun onItemLongTapped(tripLocation: TripLocation) {
+        createAndShowDialog(this,
+            getString(R.string.delete_title),
+            getString(R.string.delete_message, tripLocation.name),
+            onPositiveAction = { removeLocation(tripLocation) })
+    }
+
+    private fun removeLocation(tripLocation: TripLocation) {
+        val trip = trip ?: return
+
+        val newTrip = trip.copy(locations = trip.locations - tripLocation)
+        repository.updateTrip(newTrip)
+
+        this.trip = newTrip
+        showData()
+    }
 }

@@ -42,7 +42,7 @@ object ByName : SortOption("ByName")
 object ByNumberOfLocations : SortOption("ByNumberOfLocations")
 
 fun getSortOptionFromName(name: String): SortOption = when (name) {
-  "ByName" -> ByName
-  "ByNumberOfLocations" -> ByNumberOfLocations
-  else -> None
+    "ByName" -> ByName
+    "ByNumberOfLocations" -> ByNumberOfLocations
+    else -> None
 }
