@@ -5,13 +5,22 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.raywenderlich.android.trippey.database.DatabaseConstants.COLUMN_COUNTRY
+import com.raywenderlich.android.trippey.database.DatabaseConstants.COLUMN_DETAILS
+import com.raywenderlich.android.trippey.database.DatabaseConstants.COLUMN_ID
+import com.raywenderlich.android.trippey.database.DatabaseConstants.COLUMN_IMAGE_URL
+import com.raywenderlich.android.trippey.database.DatabaseConstants.COLUMN_LOCATIONS
+import com.raywenderlich.android.trippey.database.DatabaseConstants.COLUMN_TITLE
 import com.raywenderlich.android.trippey.database.DatabaseConstants.DATABASE_NAME
 import com.raywenderlich.android.trippey.database.DatabaseConstants.DATABASE_VERSION
 import com.raywenderlich.android.trippey.database.DatabaseConstants.QUERY_BY_ID
 import com.raywenderlich.android.trippey.database.DatabaseConstants.SQL_CREATE_ENTRIES
 import com.raywenderlich.android.trippey.database.DatabaseConstants.SQL_DELETE_ENTRIES
+import com.raywenderlich.android.trippey.database.DatabaseConstants.SQL_UPDATE_DATABASE_ADD_LOCATIONS
 import com.raywenderlich.android.trippey.database.DatabaseConstants.TRIP_TABLE_NAME
 import com.raywenderlich.android.trippey.model.Trip
+import com.raywenderlich.android.trippey.model.TripLocation
 
 /**
  * SQL database class extending SQLiteOpenHelper for the creation
@@ -30,8 +39,13 @@ class TrippeyDatabase(
 
     // Database is migrated here
     override fun onUpgrade(database: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        database?.execSQL(SQL_DELETE_ENTRIES)
-        onCreate(database)
+        if (oldVersion == 1 && newVersion == 2) {
+            database?.execSQL(SQL_UPDATE_DATABASE_ADD_LOCATIONS)
+        } else {
+            database?.execSQL(SQL_DELETE_ENTRIES)
+            onCreate(database)
+        }
+
     }
 
     fun saveTrip(trip: Trip) {
@@ -40,10 +54,10 @@ class TrippeyDatabase(
         val newValues = ContentValues().apply {
             put(DatabaseConstants.COLUMN_ID, trip.id)
             put(DatabaseConstants.COLUMN_TITLE, trip.title)
-            put(DatabaseConstants.COLUMN_COUNTRY, trip.country)
-            put(DatabaseConstants.COLUMN_DETAILS, trip.details)
-            put(DatabaseConstants.COLUMN_IMAGE_URL, trip.imageUrl)
-
+            put(COLUMN_COUNTRY, trip.country)
+            put(COLUMN_DETAILS, trip.details)
+            put(COLUMN_IMAGE_URL, trip.imageUrl)
+            put(DatabaseConstants.COLUMN_LOCATIONS, gson.toJson(trip.locations))
         }
 
         database.insert(TRIP_TABLE_NAME, null, newValues)
@@ -77,11 +91,12 @@ class TrippeyDatabase(
         while (cursor.moveToNext()) {
             items.add(
                 Trip(
-                cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_ID)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_TITLE)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_COUNTRY)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_DETAILS)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_IMAGE_URL))
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COUNTRY)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DETAILS)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_URL)),
+                parseTripLocationFromJson(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCATIONS)))
             )
             )
         }
@@ -89,6 +104,19 @@ class TrippeyDatabase(
         cursor.close()
 
         return items
+    }
+
+    private fun parseTripLocationFromJson(json: String?): List<TripLocation> {
+        if (json == null) return emptyList()
+
+        val typeToken = object : TypeToken<List<TripLocation>>() {}.type
+
+        return try {
+            gson.fromJson(json, typeToken)
+        }catch (error: Throwable) {
+            error.printStackTrace()
+            emptyList()
+        }
     }
 
 }
